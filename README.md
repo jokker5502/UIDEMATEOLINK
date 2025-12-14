@@ -1,6 +1,6 @@
-# 🚌 UIDE-Link: Offline-First Bus Telemetry System
+# 🚌 UIDE-Link: Sistema de Telemetría de Autobuses con Enfoque Offline-First
 
-**Next-generation telemetry system for Universidad Internacional del Ecuador (UIDE) transportation**
+**Sistema de telemetría de próxima generación para el transporte de la Universidad Internacional del Ecuador (UIDE)**
 
 [![Offline-First](https://img.shields.io/badge/Offline-First-success)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 [![PWA](https://img.shields.io/badge/PWA-Enabled-blue)](https://web.dev/progressive-web-apps/)
@@ -9,93 +9,93 @@
 
 ---
 
-## 📋 Table of Contents
+## 📋 Tabla de Contenidos
 
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Deployment](#deployment)
-- [Testing Offline Functionality](#testing-offline-functionality)
-- [API Documentation](#api-documentation)
-- [Troubleshooting](#troubleshooting)
-
----
-
-## 🎯 Overview
-
-UIDE-Link is an **offline-first** telemetry system designed to track student ridership on university buses, even in zones with **ZERO internet connectivity**. The system uses Progressive Web App (PWA) technology with Service Workers and IndexedDB to queue scans locally and automatically sync when connection is restored.
-
-### The Problem
-- University buses travel through areas with no cellular signal
-- Traditional systems fail when offline
-- Students need instant feedback when scanning QR codes
-
-### The Solution
-- **Offline-first architecture**: Scans recorded instantly without network
-- **Automatic background sync**: Data syncs when connection restored
-- **Service Workers**: Cache app for offline use
-- **IndexedDB**: Local database for scan queue
-- **Static QR codes**: No tablets needed on buses
+- [Descripción General](#descripción-general)
+- [Características Principales](#características-principales)
+- [Arquitectura](#arquitectura)
+- [Prerrequisitos](#prerrequisitos)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [Despliegue](#despliegue)
+- [Probando la Funcionalidad Offline](#probando-la-funcionalidad-offline)
+- [Documentación de la API](#documentación-de-la-api)
+- [Solución de Problemas](#solución-de-problemas)
 
 ---
 
-## ✨ Key Features
+## 🎯 Descripción General
 
-### 🔌 Offline-First Design
-- ✅ Scan QR codes without internet connection
-- ✅ Automatic retry with Background Sync API
-- ✅ Visual offline/online indicator
-- ✅ Pending scan counter
+UIDE-Link es un sistema de telemetría con enfoque **offline-first** diseñado para rastrear el uso de autobuses universitarios por parte de los estudiantes, incluso en zonas con **CERO conectividad a internet**. El sistema utiliza tecnología de Progressive Web App (PWA) con Service Workers e IndexedDB para encolar escaneos localmente y sincronizar automáticamente cuando se restablece la conexión.
 
-### 🚀 Performance
-- ⚡ Scan recording in <1 second
-- ⚡ Bulk sync (100 scans in <2 seconds)
-- ⚡ Service Worker caching for instant load
+### El Problema
+- Los autobuses universitarios atraviesan zonas sin señal celular
+- Los sistemas tradicionales fallan cuando no hay conexión
+- Los estudiantes necesitan retroalimentación instantánea al escanear códigos QR
 
-### 🔒 Security
-- 🔐 JWT authentication (24-hour tokens)
-- 🔐 Static QR codes with bus ID validation
-- 🔐 Conflict detection for duplicate scans
-- 🔐 HTTPS required for Service Workers
-
-### 📊 Analytics
-- 📈 Real-time bus occupancy tracking
-- 📈 Daily ridership reports
-- 📈 Route usage statistics
+### La Solución
+- **Arquitectura offline-first**: Los escaneos se registran instantáneamente sin red
+- **Sincronización automática en segundo plano**: Los datos se sincronizan cuando se restablece la conexión
+- **Service Workers**: Cachean la aplicación para uso offline
+- **IndexedDB**: Base de datos local para la cola de escaneos
+- **Códigos QR estáticos**: No se necesitan tablets en los autobuses
 
 ---
 
-## 🏗️ Architecture
+## ✨ Características Principales
+
+### 🔌 Diseño Offline-First
+- ✅ Escanear códigos QR sin conexión a internet
+- ✅ Reintento automático con Background Sync API
+- ✅ Indicador visual de estado offline/online
+- ✅ Contador de escaneos pendientes
+
+### 🚀 Rendimiento
+- ⚡ Registro de escaneos en <1 segundo
+- ⚡ Sincronización masiva (100 escaneos en <2 segundos)
+- ⚡ Cache con Service Worker para carga instantánea
+
+### 🔒 Seguridad
+- 🔐 Autenticación JWT (tokens de 24 horas)
+- 🔐 Códigos QR estáticos con validación de ID de autobús
+- 🔐 Detección de conflictos para escaneos duplicados
+- 🔐 HTTPS requerido para Service Workers
+
+### 📊 Analítica
+- 📈 Seguimiento en tiempo real de la ocupación de autobuses
+- 📈 Reportes diarios de uso
+- 📈 Estadísticas de uso de rutas
+
+---
+
+## 🏗️ Arquitectura
 
 ```
 ┌─────────────────────────────────────────────┐
-│         Student Device (Offline)            │
+│      Dispositivo del Estudiante (Offline)   │
 │  ┌─────────────────────────────────────┐   │
 │  │  PWA (HTML/CSS/JS)                  │   │
-│  │  - QR Scanner                       │   │
-│  │  - Login/Auth                       │   │
+│  │  - Escáner QR                       │   │
+│  │  - Login/Autenticación              │   │
 │  └─────────────────────────────────────┘   │
 │           ↓                                 │
 │  ┌─────────────────────────────────────┐   │
 │  │  Service Worker                     │   │
-│  │  - Cache static assets              │   │
-│  │  - Network-first for API            │   │
+│  │  - Cache de recursos estáticos      │   │
+│  │  - Estrategia network-first para API│   │
 │  │  - Background Sync                  │   │
 │  └─────────────────────────────────────┘   │
 │           ↓                                 │
 │  ┌─────────────────────────────────────┐   │
 │  │  IndexedDB                          │   │
-│  │  - Scan queue (offline)             │   │
-│  │  - User data (token)                │   │
-│  │  - Routes cache                     │   │
+│  │  - Cola de escaneos (offline)       │   │
+│  │  - Datos de usuario (token)         │   │
+│  │  - Cache de rutas                   │   │
 │  └─────────────────────────────────────┘   │
 └─────────────────────────────────────────────┘
-                    ↓ (when online)
+                    ↓ (cuando hay conexión)
          ┌──────────────────────┐
-         │   Express API        │
+         │   API Express        │
          │   - /api/auth/*      │
          │   - /api/scans/*     │
          │   - /api/routes      │
@@ -109,62 +109,62 @@ UIDE-Link is an **offline-first** telemetry system designed to track student rid
          └──────────────────────┘
 ```
 
-### Tech Stack
+### Stack Tecnológico
 
 **Backend:**
-- Node.js 18+ with Express
+- Node.js 18+ con Express
 - PostgreSQL 12+
-- JWT for authentication
-- bcrypt for password hashing
+- JWT para autenticación
+- bcrypt para hash de contraseñas
 
 **Frontend:**
 - Progressive Web App (PWA)
-- Vanilla JavaScript (no framework - optimized for speed)
+- JavaScript Vanilla (sin frameworks - optimizado para velocidad)
 - Service Worker API
 - IndexedDB API
 - Background Sync API
-- html5-qrcode library
+- Librería html5-qrcode
 
-**Deployment:**
-- AWS (EC2 for backend, RDS for PostgreSQL, S3 for static files)
-- HTTPS required (Let's Encrypt)
-
----
-
-## 📦 Prerequisites
-
-Before installation, ensure you have:
-
-- **Node.js** 18+ ([download](https://nodejs.org/))
-- **PostgreSQL** 12+ ([download](https://www.postgresql.org/download/))
-- **Git** ([download](https://git-scm.com/))
-- **Web browser** with Service Worker support (Chrome, Firefox, Safari, Edge)
+**Despliegue:**
+- AWS (EC2 para backend, RDS para PostgreSQL, S3 para archivos estáticos)
+- HTTPS requerido (Let's Encrypt)
 
 ---
 
-## 🚀 Installation
+## 📦 Prerrequisitos
 
-### 1. Clone Repository
+Antes de la instalación, asegúrate de tener:
+
+- **Node.js** 18+ ([descargar](https://nodejs.org/))
+- **PostgreSQL** 12+ ([descargar](https://www.postgresql.org/download/))
+- **Git** ([descargar](https://git-scm.com/))
+- **Navegador web** con soporte para Service Workers (Chrome, Firefox, Safari, Edge)
+
+---
+
+## 🚀 Instalación
+
+### 1. Clonar el Repositorio
 
 ```bash
-git clone <repository-url>
+git clone <url-del-repositorio>
 cd "proyecto de buses UIDE"
 ```
 
-### 2. Database Setup
+### 2. Configuración de la Base de Datos
 
-#### Create PostgreSQL database:
+#### Crear la base de datos PostgreSQL:
 
 ```bash
-# Login to PostgreSQL
+# Iniciar sesión en PostgreSQL
 psql -U postgres
 
-# Create database
+# Crear base de datos
 CREATE DATABASE uide_link;
 \q
 ```
 
-#### Run migrations:
+#### Ejecutar migraciones:
 
 ```bash
 cd database
@@ -172,213 +172,213 @@ psql -U postgres -d uide_link -f schema.sql
 psql -U postgres -d uide_link -f seed.sql
 ```
 
-### 3. Backend Setup
+### 3. Configuración del Backend
 
 ```bash
 cd backend
 
-# Install dependencies
+# Instalar dependencias
 npm install
 
-# Create .env file
+# Crear archivo .env
 cp .env.example .env
 
-# Edit .env with your settings
+# Editar .env con tus configuraciones
 # Windows:
 notepad .env
 # Linux/Mac:
 nano .env
 ```
 
-**Configure `.env`:**
+**Configurar `.env`:**
 
 ```env
-DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/uide_link
-JWT_SECRET=your-super-secret-key-change-this
+DATABASE_URL=postgresql://postgres:TU_CONTRASEÑA@localhost:5432/uide_link
+JWT_SECRET=tu-clave-super-secreta-cambia-esto
 PORT=3000
 FRONTEND_URL=http://localhost:8080
 ```
 
-#### Start backend:
+#### Iniciar el backend:
 
 ```bash
 npm run dev
 ```
 
-Server should start on `http://localhost:3000`
+El servidor debería iniciarse en `http://localhost:3000`
 
-### 4. Frontend Setup
+### 4. Configuración del Frontend
 
 ```bash
 cd ../frontend
 
-# Install a simple HTTP server
+# Instalar un servidor HTTP simple
 npm install -g http-server
 
-# Serve the frontend
+# Servir el frontend
 http-server public -p 8080 -c-1
 ```
 
-Frontend should be available at `http://localhost:8080`
+El frontend debería estar disponible en `http://localhost:8080`
 
-### 5. Generate PWA Icons
+### 5. Generar Iconos para la PWA
 
-You need to create two icon files in `frontend/public/icons/`:
+Necesitas crear dos archivos de icono en `frontend/public/icons/`:
 - `icon-192.png` (192x192px)
 - `icon-512.png` (512x512px)
 
-Use any graphic design tool or online generator with the UIDE logo/branding.
+Usa cualquier herramienta de diseño gráfico o generador en línea con el logo/marca de la UIDE.
 
 ---
 
-## 📱 Usage
+## 📱 Uso
 
-### For Students
+### Para Estudiantes
 
-1. **Open the app**: Navigate to `http://localhost:8080/student.html`
-2. **Login**:
+1. **Abrir la aplicación**: Navegar a `http://localhost:8080/student.html`
+2. **Iniciar sesión**:
    - Email: `maria.garcia@uide.edu.ec`
-   - Password: `uide2024`
-3. **Scan QR code**: Click "Escanear Código QR"
-4. **Select type**: Choose "Ingreso" (entering bus) or "Salida" (exiting bus)
-5. **View history**: See your scans in the history section
+   - Contraseña: `uide2024`
+3. **Escanear código QR**: Hacer clic en "Escanear Código QR"
+4. **Seleccionar tipo**: Elegir "Ingreso" (entrando al autobús) o "Salida" (saliendo del autobús)
+5. **Ver historial**: Ver tus escaneos en la sección de historial
 
-**Offline Mode:**
-- Turn on airplane mode on your device
-- Scan QR codes as normal
-- Scans are queued locally
-- Turn off airplane mode → automatic sync
+**Modo Offline:**
+- Activar el modo avión en tu dispositivo
+- Escanear códigos QR normalmente
+- Los escaneos se encolan localmente
+- Desactivar modo avión → sincronización automática
 
-### For Drivers
+### Para Conductores
 
-1. **Open the app**: Navigate to `http://localhost:8080/driver.html`
-2. **Login**:
+1. **Abrir la aplicación**: Navegar a `http://localhost:8080/driver.html`
+2. **Iniciar sesión**:
    - Email: `raul.rivera@uide.edu.ec`
-   - Password: `driver2024`
-3. **Display QR code**: Show the QR code to students
-4. **View stats**: See real-time boarding statistics
+   - Contraseña: `driver2024`
+3. **Mostrar código QR**: Mostrar el código QR a los estudiantes
+4. **Ver estadísticas**: Ver estadísticas de embarque en tiempo real
 
 ---
 
-## 🌐 Deployment
+## 🌐 Despliegue
 
-### AWS Deployment (Recommended)
+### Despliegue en AWS (Recomendado)
 
-#### 1. Backend Deployment (EC2)
+#### 1. Despliegue del Backend (EC2)
 
 ```bash
-# SSH into EC2 instance
-ssh -i your-key.pem ubuntu@your-ec2-ip
+# SSH a la instancia EC2
+ssh -i tu-clave.pem ubuntu@tu-ip-ec2
 
-# Install Node.js
+# Instalar Node.js
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-# Install PostgreSQL or use RDS
-# (Recommended: Use AWS RDS for production)
+# Instalar PostgreSQL o usar RDS
+# (Recomendado: Usar AWS RDS para producción)
 
-# Clone repository
-git clone <repository-url>
+# Clonar repositorio
+git clone <url-del-repositorio>
 cd "proyecto de buses UIDE/backend"
 
-# Install dependencies
+# Instalar dependencias
 npm install --production
 
-# Set up environment
+# Configurar entorno
 nano .env
-# Configure production DATABASE_URL, JWT_SECRET, etc.
+# Configurar DATABASE_URL, JWT_SECRET, etc. para producción
 
-# Install PM2 for process management
+# Instalar PM2 para gestión de procesos
 sudo npm install -g pm2
 
-# Start server
+# Iniciar servidor
 pm2 start server.js --name uide-link-api
 pm2 startup
 pm2 save
 ```
 
-#### 2. Frontend Deployment (S3 + CloudFront)
+#### 2. Despliegue del Frontend (S3 + CloudFront)
 
 ```bash
-# Install AWS CLI
+# Instalar AWS CLI
 aws configure
 
-# Build frontend (if using bundler) or upload directly
+# Construir frontend (si se usa bundler) o subir directamente
 cd frontend/public
 
-# Upload to S3
-aws s3 sync . s3://your-bucket-name --acl public-read
+# Subir a S3
+aws s3 sync . s3://nombre-de-tu-bucket --acl public-read
 
-# Configure CloudFront distribution
-# Point to S3 bucket
-# Enable HTTPS (required for Service Workers)
+# Configurar distribución de CloudFront
+# Apuntar al bucket S3
+# Habilitar HTTPS (requerido para Service Workers)
 ```
 
-#### 3. Database (RDS)
+#### 3. Base de Datos (RDS)
 
-- Create PostgreSQL RDS instance
-- Security groups: Allow backend EC2 to connect
-- Run migrations:
+- Crear instancia RDS de PostgreSQL
+- Grupos de seguridad: Permitir conexión desde el EC2 del backend
+- Ejecutar migraciones:
 
 ```bash
-psql -h your-rds-endpoint -U postgres -d uide_link -f schema.sql
-psql -h your-rds-endpoint -U postgres -d uide_link -f seed.sql
+psql -h tu-endpoint-rds -U postgres -d uide_link -f schema.sql
+psql -h tu-endpoint-rds -U postgres -d uide_link -f seed.sql
 ```
 
-### HTTPS Setup (Required for PWA)
+### Configuración HTTPS (Requerido para PWA)
 
 ```bash
-# Install Nginx
+# Instalar Nginx
 sudo apt-get install nginx
 
-# Install Certbot
+# Instalar Certbot
 sudo apt-get install certbot python3-certbot-nginx
 
-# Get SSL certificate
-sudo certbot --nginx -d yourdomain.com
+# Obtener certificado SSL
+sudo certbot --nginx -d tudominio.com
 ```
 
 ---
 
-## 🧪 Testing Offline Functionality
+## 🧪 Probando la Funcionalidad Offline
 
-### Test Scenario 1: Basic Offline Scan
+### Escenario de Prueba 1: Escaneo Offline Básico
 
-1. Open student app in Chrome
-2. Login successfully
-3. Open DevTools → Network tab
-4. Select "Offline" from throttling dropdown
-5. Scan a QR code (use QR from driver dashboard)
-6. Verify: Scan recorded instantly, shows "1 escaneo pendiente"
-7. Select "Online" from throttling
-8. Verify: Auto-sync happens, shows "Todo sincronizado"
+1. Abrir la aplicación de estudiante en Chrome
+2. Iniciar sesión exitosamente
+3. Abrir DevTools → pestaña Network
+4. Seleccionar "Offline" del menú de throttling
+5. Escanear un código QR (usar QR del panel del conductor)
+6. Verificar: Escaneo registrado instantáneamente, muestra "1 escaneo pendiente"
+7. Seleccionar "Online" del throttling
+8. Verificar: La auto-sincronización ocurre, muestra "Todo sincronizado"
 
-### Test Scenario 2: Bulk Offline Sync
+### Escenario de Prueba 2: Sincronización Masiva Offline
 
-1. Scan 10 QR codes while offline
-2. Check IndexedDB (DevTools → Application → IndexedDB → UIDELinkDB → scans)
-3. Verify: 10 records in queue
-4. Go online
-5. Verify: All 10 synced within 2 seconds
+1. Escanear 10 códigos QR estando offline
+2. Revisar IndexedDB (DevTools → Application → IndexedDB → UIDELinkDB → scans)
+3. Verificar: 10 registros en la cola
+4. Volver a estar online
+5. Verificar: Los 10 sincronizados en menos de 2 segundos
 
-### Test Scenario 3: Service Worker Caching
+### Escenario de Prueba 3: Cache con Service Worker
 
-1. Open app while online
-2. Go offline
-3. Close tab and reopen
-4. Verify: App loads from cache, UI visible
-5. Verify: Static assets served from cache
+1. Abrir la aplicación estando online
+2. Pasar a offline
+3. Cerrar la pestaña y reabrir
+4. Verificar: La aplicación carga desde el cache, la interfaz es visible
+5. Verificar: Los recursos estáticos son servidos desde el cache
 
 ---
 
-## 📚 API Documentation
+## 📚 Documentación de la API
 
-### Authentication
+### Autenticación
 
 #### `POST /api/auth/login`
-Login for students, drivers, or admins.
+Inicio de sesión para estudiantes, conductores o administradores.
 
-**Request:**
+**Solicitud:**
 ```json
 {
   "email": "student@uide.edu.ec",
@@ -387,7 +387,7 @@ Login for students, drivers, or admins.
 }
 ```
 
-**Response:**
+**Respuesta:**
 ```json
 {
   "success": true,
@@ -398,17 +398,17 @@ Login for students, drivers, or admins.
 }
 ```
 
-### Scans
+### Escaneos
 
 #### `POST /api/scans/bulk`
-Sync offline scans (bulk endpoint).
+Sincronizar escaneos offline (endpoint masivo).
 
-**Headers:**
+**Encabezados:**
 ```
 Authorization: Bearer <token>
 ```
 
-**Request:**
+**Solicitud:**
 ```json
 {
   "scans": [
@@ -422,7 +422,7 @@ Authorization: Bearer <token>
 }
 ```
 
-**Response:**
+**Respuesta:**
 ```json
 {
   "success": true,
@@ -436,63 +436,63 @@ Authorization: Bearer <token>
 ```
 
 #### `GET /api/scans/student/:studentId`
-Get scan history for a student.
+Obtener historial de escaneos de un estudiante.
 
-**Query params:** `?days=7&limit=50`
+**Parámetros de consulta:** `?days=7&limit=50`
 
-### Routes
+### Rutas
 
 #### `GET /api/routes`
-Get all active routes.
+Obtener todas las rutas activas.
 
 #### `GET /api/schedules`
-Get operation hours (arrivals/departures).
+Obtener horarios de operación (llegadas/salidas).
 
 ---
 
-## 🐛 Troubleshooting
+## 🐛 Solución de Problemas
 
-### Service Worker Not Registering
+### Service Worker No Se Registra
 
-**Problem:** Console shows "Service Worker registration failed"
+**Problema:** La consola muestra "Service Worker registration failed"
 
-**Solutions:**
-1. Ensure HTTPS (or localhost for testing)
-2. Check browser compatibility
-3. Clear browser cache and re-register
+**Soluciones:**
+1. Asegurar HTTPS (o localhost para pruebas)
+2. Verificar compatibilidad del navegador
+3. Limpiar cache del navegador y re-registrar
 
-### Database Connection Failed
+### Conexión a Base de Datos Fallida
 
-**Problem:** Backend shows "Database connection error"
+**Problema:** El backend muestra "Database connection error"
 
-**Solutions:**
-1. Verify PostgreSQL is running: `sudo systemctl status postgresql`
-2. Check `DATABASE_URL` in `.env`
-3. Test connection: `psql -U postgres -d uide_link`
+**Soluciones:**
+1. Verificar que PostgreSQL esté corriendo: `sudo systemctl status postgresql`
+2. Revisar `DATABASE_URL` en `.env`
+3. Probar conexión: `psql -U postgres -d uide_link`
 
-### Scans Not Syncing
+### Escaneos No Se Sincronizan
 
-**Problem:** Scans stay in "pending" state
+**Problema:** Los escaneos se quedan en estado "pendiente"
 
-**Solutions:**
-1. Check browser console for errors
-2. Verify backend is running and accessible
-3. Check JWT token not expired (re-login)
-4. Inspect Network tab for failed requests
+**Soluciones:**
+1. Revisar la consola del navegador en busca de errores
+2. Verificar que el backend esté corriendo y accesible
+3. Verificar que el token JWT no haya expirado (re-iniciar sesión)
+4. Inspeccionar la pestaña Network en busca de solicitudes fallidas
 
-### QR Scanner Not Working
+### Escáner QR No Funciona
 
-**Problem:** Camera doesn't start
+**Problema:** La cámara no inicia
 
-**Solutions:**
-1. Grant camera permissions
-2. Use HTTPS (camera requires secure context)
-3. Test on different browser
-4. Check browser compatibility
+**Soluciones:**
+1. Otorgar permisos de cámara
+2. Usar HTTPS (la cámara requiere contexto seguro)
+3. Probar en otro navegador
+4. Verificar compatibilidad del navegador
 
 ---
 
-## 📖 Additional Resources
+## 📖 Recursos Adicionales
 
 - **Progressive Web Apps**: [web.dev/progressive-web-apps](https://web.dev/progressive-web-apps/)
 - **Service Workers**: [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
@@ -501,20 +501,20 @@ Get operation hours (arrivals/departures).
 
 ---
 
-## 📝 License
+## 📝 Licencia
 
-© 2024 Universidad Internacional del Ecuador (UIDE). All rights reserved.
-
----
-
-## 👥 Support
-
-For support, contact the UIDE IT department or create an issue in the repository.
+© 2024 Universidad Internacional del Ecuador (UIDE). Todos los derechos reservados.
 
 ---
 
-## 🎓 About UIDE
+## 👥 Soporte
 
-Universidad Internacional del Ecuador (UIDE) is committed to providing quality education and innovative solutions for student transportation.
+Para soporte, contacta al departamento de TI de la UIDE o crea un issue en el repositorio.
 
-**UIDE-Link** is designed to improve the safety and efficiency of university transportation services through modern web technology.
+---
+
+## 🎓 Acerca de la UIDE
+
+La Universidad Internacional del Ecuador (UIDE) está comprometida con proveer educación de calidad y soluciones innovadoras para el transporte estudiantil.
+
+**UIDE-Link** está diseñado para mejorar la seguridad y eficiencia de los servicios de transporte universitario a través de tecnología web moderna.
